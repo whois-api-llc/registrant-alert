@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrant Alert API JQuery Key-Value Search Sample</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        // Fill in your details
+        var username = "Your registrant alert api username";
+        var password = "Your registrant alert api password";
+
+        window.addEventListener("load", onPageLoad, false);
+
+        var post_data ='{                       \
+            "terms":[                           \
+                {                               \
+                    "section":"Registrant",     \
+                    "attribute":"email",        \
+                    "value":"gmail.com",        \
+                    "exclude":"false",          \
+                    "matchType":"EndsWith"      \
+                },                              \
+                {                               \
+                    "section":"General",        \
+                    "attribute":"DomainName",   \
+                    "value":".com",             \
+                    "exclude":"false",          \
+                    "matchType":"EndsWith"      \
+                }],                             \
+            "recordsCounter": false,            \
+            "outputFormat": "json",             \
+            "username": "' + username + '",     \
+            "password": "' + password + '",     \
+            "rows": 20                          \
+        }';
+
+        function onPageLoad() {
+            $.post(
+                "https://www.whoisxmlapi.com/registrant-alert-api/search.php",
+                post_data,
+                function(data) {
+                    $("body").append(
+                        "<pre>"+JSON.stringify(data,"",2)+"</pre>");
+                }
+            );
+        }
+    </script>
+</head>
+<body></body>
+</html>
