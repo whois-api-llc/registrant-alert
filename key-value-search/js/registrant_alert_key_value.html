@@ -8,41 +8,40 @@
         var username = "Your registrant alert api username";
         var password = "Your registrant alert api password";
 
-        window.addEventListener("load", onPageLoad, false);
+        var post_data = {
+            terms: [
+                {
+                    section: "Registrant",
+                    attribute: "email",
+                    value: "gmail.com",
+                    exclude: false,
+                    matchType: "EndsWith"
+                },
+                {
+                    section: "General",
+                    attribute: "DomainName",
+                    value: ".com",
+                    exclude: false,
+                    matchType: "EndsWith"
+                }
+            ],
+            recordsCounter: false,
+            outputFormat: "json",
+            username: username,
+            password: password,
+            rows: 20
+        };
 
-        var post_data ='{                       \
-            "terms":[                           \
-                {                               \
-                    "section":"Registrant",     \
-                    "attribute":"email",        \
-                    "value":"gmail.com",        \
-                    "exclude":"false",          \
-                    "matchType":"EndsWith"      \
-                },                              \
-                {                               \
-                    "section":"General",        \
-                    "attribute":"DomainName",   \
-                    "value":".com",             \
-                    "exclude":"false",          \
-                    "matchType":"EndsWith"      \
-                }],                             \
-            "recordsCounter": false,            \
-            "outputFormat": "json",             \
-            "username": "' + username + '",     \
-            "password": "' + password + '",     \
-            "rows": 20                          \
-        }';
-
-        function onPageLoad() {
+        $(function () {
             $.post(
                 "https://www.whoisxmlapi.com/registrant-alert-api/search.php",
-                post_data,
+                JSON.stringify(post_data),
                 function(data) {
                     $("body").append(
-                        "<pre>"+JSON.stringify(data,"",2)+"</pre>");
+                        "<pre>" + JSON.stringify(data, "", 2) + "</pre>");
                 }
             );
-        }
+        });
     </script>
 </head>
 <body></body>

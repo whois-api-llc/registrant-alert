@@ -3,6 +3,7 @@ using System.Net;
 using System.IO;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 // Note that you need to make sure your Project is set to ".NET Framework 4"
 // and NOT ".NET Framework 4 Client Profile". Once that is set, make sure the
@@ -61,22 +62,30 @@ namespace RegistrantAlertApiPost
             using (var streamWriter =
                         new StreamWriter(httpWebRequest.GetRequestStream()))
             {
-                string json = "{" +
-                    "\"terms\": [" +
-                        "{"
-                            + "\"section\": \"Registrant\","
-                            + "\"attribute\": \"name\","
-                            + "\"value\": \"n\","
-                            + "\"matchType\": \"EndsWith\","
-                            + "\"exclude\": \"false\""
-                      + "}],"
-                    + "\"recordsCounter\": \"false\","
-                    + "\"outputFormat\": \"xml\","
-                    + "\"username\": \"" + this.GetUsername() + "\","
-                    + "\"password\": \"" + this.GetPassword() + "\","
-                    + "\"rows\": \"10\", \"searchType\": \"current\""
-                + "}";
-                streamWriter.Write(json);
+                string json = @"{
+                    terms: [
+                        {
+                            section: 'Registrant',
+                            attribute: 'name',
+                            value: 'n',
+                            matchType: 'EndsWith',
+                            exclude: false
+                        }
+                    ],
+                    recordsCounter: false,
+                    outputFormat: 'xml',
+                    username: 'USER_NAME',
+                    password: 'USER_PASS',
+                    rows: 10,
+                    searchType: 'current'
+                }";
+
+                json = json.Replace("USER_NAME", this.GetUsername())
+                           .Replace("USER_PASS", this.GetPassword());
+                
+                string jsonData = JObject.Parse(json).ToString();
+
+                streamWriter.Write(jsonData);
                 streamWriter.Flush();
                 streamWriter.Close();
             }
@@ -99,10 +108,10 @@ namespace RegistrantAlertApiPost
             /////////////////////////////
             string requestParams =
                 "?term1=" + "test" +  "&mode=purchase" + "&username="
-                + this.GetUsername() + "&password=" + this.GetPassword();
+                + Uri.EscapeDataString(this.GetUsername())
+                + "&password=" + Uri.EscapeDataString(this.GetPassword());
 
             string fullUrl = Url + requestParams;
-            fullUrl = Uri.EscapeUriString(fullUrl);
 
             Console.Write("Sending request to: " + fullUrl + "\n");
 

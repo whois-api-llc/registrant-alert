@@ -27,10 +27,13 @@ namespace RegistrantAlertApi
             String format = "XML";
             String url =
                 "https://www.whoisxmlapi.com/registrant-alert-api/search.php?"
-                + "username=" + username + "&password=" + password
-                + "&output_format=" + format + "&term1=" + term1
-                + "&exclude_term1=" + exclude_term1;
-            url = Uri.EscapeUriString(url);
+                + "username=" + Uri.EscapeDataString(username)
+                + "&password=" + Uri.EscapeDataString(password)
+                + "&output_format=" + Uri.EscapeDataString(format)
+                + "&term1=" + Uri.EscapeDataString(term1)
+                + "&exclude_term1=" + Uri.EscapeDataString(exclude_term1);
+
+            Console.WriteLine(url);
 
             // Download XML into a dynamic object
             dynamic result = new System.Net.WebClient().DownloadString(url);

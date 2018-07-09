@@ -13,9 +13,6 @@ You'll need a
 [WhoisXmlApi account](https://www.whoisxmlapi.com/user/create.php) to
 authenticate.
 
-This API also supports
-[API key authentication](https://www.whoisxmlapi.com/user/management.php#api-key-management).
-
 Please, refer to the
 [Registrant Alert API User Guide](https://www.whoisxmlapi.com/registrant-alert-api-guide.php)
 for info on input parameters, request/response formats, authentication

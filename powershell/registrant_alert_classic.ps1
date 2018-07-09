@@ -1,9 +1,15 @@
-$uri = "https://www.whoisxmlapi.com/registrant-alert-api/search.php?"`
-     + "term1=test"`
-     + "&username=Your registrant alert api username"`
-     + "&password=Your registrant alert api password"`
-     + "&rows=5"
-$uri = [uri]::EscapeUriString($uri)
+$url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php'
+
+$username = 'Your registrant alert api username'
+$password = 'Your registrant alert api password'
+$term1 = 'test'
+$rows = 5
+
+$uri = $url`
+     + '?term1=' + [uri]::EscapeDataString($term1)`
+     + '&username=' + [uri]::EscapeDataString($username)`
+     + '&password=' + [uri]::EscapeDataString($password)`
+     + '&rows=' + [uri]::EscapeDataString($rows)
 
 #######################
 # Use a JSON resource #

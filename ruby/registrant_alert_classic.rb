@@ -1,3 +1,4 @@
+require 'erb'
 require 'open-uri'
 require 'json'
 require 'yaml' # only needed to print the returned result in a very pretty way
@@ -5,10 +6,10 @@ require 'yaml' # only needed to print the returned result in a very pretty way
 ########################
 # Fill in your details #
 ########################
-username = "Your registrant alert api username"
-password = "Your registrant alert api password"
+username = 'Your registrant alert api username'
+password = 'Your registrant alert api password'
 
-term1 = "test"
+term1 = 'test'
 exclude_term1 = 'movie'
 exclude_term2 = 'online'
 
@@ -17,15 +18,15 @@ exclude_term2 = 'online'
 #######################
 format = "JSON"
 url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php?' +
-    'term1=' + term1 +
-    '&username=' + username +
-    '&password=' + password +
-    '&output_format=' + format +
-    '&exclude_term1=' + exclude_term1 +
-    '&exclude_term2=' + exclude_term2
+    'term1=' + ERB::Util.url_encode(term1) +
+    '&username=' + ERB::Util.url_encode(username) +
+    '&password=' + ERB::Util.url_encode(password) +
+    '&output_format=' + ERB::Util.url_encode(format) +
+    '&exclude_term1=' + ERB::Util.url_encode(exclude_term1) +
+    '&exclude_term2=' + ERB::Util.url_encode(exclude_term2)
 
 # Open the resource
-buffer = open(URI.encode(url)).read
+buffer = open(url).read
 
 # Parse the JSON result
 result = JSON.parse(buffer)

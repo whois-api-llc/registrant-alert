@@ -1,4 +1,5 @@
 var http = require('https');
+var querystring = require('querystring');
 
 const username = 'Your registrant alert api username';
 const password = 'Your registrant alert api password';
@@ -7,15 +8,20 @@ const exclude_term1 = 'movie';
 const exclude_term2 = 'online';
 const format = 'JSON';
 
-var url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php?'
-    + 'term1=' + term1
-    + '&username=' + username
-    + '&password=' + password
-    + '&output_format=' + format
-    + '&exclude_term1=' + exclude_term1
-    + '&exclude_term2=' + exclude_term2;
+var url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php?';
 
-http.get(encodeURI(url), function(response) {
+var params = {
+    term1: term1,
+    username: username,
+    password: password,
+    output_format: format,
+    exclude_term1: exclude_term1,
+    exclude_term2: exclude_term2
+};
+
+url = url + querystring.stringify(params);
+
+http.get(url, function(response) {
     var str = '';
     response.on('data', function(chunk) {
         str += chunk;

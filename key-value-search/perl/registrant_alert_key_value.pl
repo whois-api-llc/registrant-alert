@@ -1,14 +1,12 @@
 #!/usr/bin/perl
 
-use LWP::Protocol::https;       # From CPAN
-use LWP::Simple;                # From CPAN
-use JSON qw( decode_json );     # From CPAN
-use strict;                     # Good practice
-use warnings;                   # Good practice
-
-use LWP::UserAgent;
-use HTTP::Request::Common qw{ POST };
-
+use HTTP::Request::Common qw{ POST }; # From CPAN
+use JSON qw( decode_json );           # From CPAN
+use LWP::Protocol::https;             # From CPAN
+use LWP::Simple;                      # From CPAN
+use LWP::UserAgent;                   # From CPAN
+use strict;                           # Good practice
+use warnings;                         # Good practice
 
 ########################
 # Fill in your details #
@@ -38,21 +36,21 @@ sub registrantAlertKeyValueSearch {
                 "attribute": "organization",
                 "value": "inc",
                 "matchType": "anywhere",
-                "exclude": "false"
+                "exclude": false
             },
             {
                 "section": "technical",
                 "attribute": "city",
                 "value": "a",
                 "matchType": "anywhere",
-                "exclude": "false"
+                "exclude": false
             }
         ],
 
         "recordsCounter": false,
         "outputFormat": "json",
-        "username": "'.$user_name.'",
-        "password": "'.$password.'",
+        "username": "' . $user_name . '",
+        "password": "' . $password . '",
         "rows": 10
     }';
 

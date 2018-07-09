@@ -5,28 +5,29 @@ var username = 'Your registrant alert api username';
 var password = 'Your registrant alert api password';
 
 // Build the post string
-var post_data ='{                      \
-    "terms":[                          \
-        {                              \
-            "section": "Registrant",   \
-            "attribute": "email",      \
-            "value": "gmail.com",      \
-            "exclude": "false",        \
-            "matchType": "EndsWith"    \
-        },                             \
-        {                              \
-            "section": "General",      \
-            "attribute": "DomainName", \
-            "value": ".com",           \
-            "exclude": "false",        \
-            "matchType": "EndsWith"    \
-        }],                            \
-    "recordsCounter": false,           \
-    "outputFormat": "json",            \
-    "username": "' + username + '",    \
-    "password": "' + password +'",     \
-    "rows": 20                         \
-}';
+var post_data = {
+    terms: [
+        {
+            section: "Registrant",
+            attribute: "email",
+            value: "gmail.com",
+            exclude: false,
+            matchType: "EndsWith"
+        },
+        {
+            section: "General",
+            attribute: "DomainName",
+            value: ".com",
+            exclude: false,
+            matchType: "EndsWith"
+        }
+    ],
+    recordsCounter: false,
+    outputFormat: "json",
+    username: username,
+    password: password,
+    rows: 20
+};
 
 // Set request options
 var options = {
@@ -37,7 +38,7 @@ var options = {
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Content-Length': post_data.length
+        'Content-Length': JSON.stringify(post_data).length
     },
     json: true
 };
@@ -60,5 +61,5 @@ req.on('error', function(e) {
 });
 
 // Send request
-req.write(post_data);
+req.write(JSON.stringify(post_data));
 req.end();

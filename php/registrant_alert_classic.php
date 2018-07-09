@@ -11,4 +11,4 @@ $url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php?'
      . '&password=' . urlencode($password)
      . '&rows=' . urlencode($rows);
 
-print(file_get_contents($url));
+print(file_get_contents($url) . PHP_EOL);

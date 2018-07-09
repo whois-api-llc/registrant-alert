@@ -49,15 +49,17 @@ public class RegistrantAlertKeyValue
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", USER_AGENT);
 
-        String searchTerm1 =
-            "\"section\": \"Registrant\",  \"attribute\": \"name\","
-            + "\"value\": \"J\", \"matchType\": \"anywhere\","
-            + "\"exclude\": \"false\"";
+        String searchTerm1 = "\"section\": \"Registrant\","
+                           + "\"attribute\": \"name\","
+                           + "\"value\": \"J\","
+                           + "\"matchType\": \"anywhere\","
+                           + "\"exclude\": false";
 
         String requestOptions =
-            "\"recordsCounter\": \"false\", \"rows\": 10, \"username\":"
-            + this.getUsername(true) + ", \"password\":"
-            + this.getPassword(true) + ", \"output_format\": \"json\"";
+                "\"recordsCounter\": false,"
+                + "\"rows\": 10, \"username\":" + this.getUsername(true) + ","
+                + "\"password\":" + this.getPassword(true) + ","
+                + "\"output_format\": \"json\"";
 
         String requestObject =
                 "{\"terms\":[{" + searchTerm1 + "}], " + requestOptions +"}";
@@ -73,8 +75,9 @@ public class RegistrantAlertKeyValue
 
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
+
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -88,6 +91,7 @@ public class RegistrantAlertKeyValue
     {
         HttpClient httpclient = null;
         String responseBody = "";
+
         try {
             String url_api = this.url
                + "?term1=whois&search_type=current&mode=purchase&rows=5"
@@ -108,6 +112,7 @@ public class RegistrantAlertKeyValue
             if (httpclient != null)
                 httpclient.getConnectionManager().shutdown();
         }
+
         return responseBody;
     }
 
@@ -128,8 +133,10 @@ public class RegistrantAlertKeyValue
 
     public String getUsername(boolean quotes)
     {
-        if(quotes) return "\"" + this.getUsername() + "\"";
-        else return this.getUsername();
+        if (quotes)
+            return "\"" + this.getUsername() + "\"";
+        else
+            return this.getUsername();
     }
 
     public String getPassword()
@@ -139,8 +146,10 @@ public class RegistrantAlertKeyValue
 
     public String getPassword(boolean quotes)
     {
-        if(quotes) return "\"" + this.getPassword() + "\"";
-        else return this.getPassword();
+        if (quotes)
+            return "\"" + this.getPassword() + "\"";
+        else
+            return this.getPassword();
     }
 
     public void printPrettyJson(String jsonString)

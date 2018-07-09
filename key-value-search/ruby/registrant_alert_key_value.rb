@@ -1,8 +1,8 @@
 require 'json'
-require 'yaml'# only needed to print the returned result in a very pretty way
-require 'uri'
-require 'openssl'
 require "net/https"
+require 'openssl'
+require 'uri'
+require 'yaml'# only needed to print the returned result in a very pretty way
 
 ########################
 # Fill in your details #
@@ -23,17 +23,17 @@ content = {
             attribute: "Name",
             matchType: "BeginsWith",
             value: "Mark",
-            exclude:"true"
+            exclude: false
         },
         {
             section: "Technical",
             attribute: "Country",
             matchType: "Anywhere",
             value: "US",
-            exclude:"true"
+            exclude: true
         }
     ],
-    recordsCounter: "false",
+    recordsCounter: false,
     username: username,
     password: password ,
     output_format: format,

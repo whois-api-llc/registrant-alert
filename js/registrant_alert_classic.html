@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registrant Alert API JQuery Classic Search Sample</title>
+    <title>Registrant Alert API JQuery Search Sample</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
         var apiUrl =
@@ -12,12 +12,10 @@
         var term1 = "test";
         var format = "JSON";
 
-        window.addEventListener("load", onPageLoad, false);
-
-        function onPageLoad() {
+        $(function () {
             $.ajax({
                 url: apiUrl,
-                dataType: "json",
+                dataType: "jsonp",
                 data: {
                     term1: term1,
                     username: username,
@@ -26,10 +24,10 @@
                 },
                 success: function(data) {
                     $("body").append(
-                      "<pre>"+ JSON.stringify(data,"",2)+"</pre>");
+                      "<pre>" + JSON.stringify(data,"",2) + "</pre>");
                 }
             });
-        }
+        });
     </script>
 </head>
 <body></body>

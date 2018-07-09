@@ -2,36 +2,39 @@
 
 use LWP::Protocol::https;         # From CPAN
 use LWP::Simple;                  # From CPAN
-use URI::Encode qw( uri_encode ); # From CPAN
+use URI::Escape qw( uri_escape ); # From CPAN
 use strict;                       # Good practice
 use warnings;                     # Good practice
 
-my $base_url = "https://www.whoisxmlapi.com/registrant-alert-api/search.php";
-my $term1 = "whois";
-my $exclude_term1 = "domain";
-my $exclude_term2 = "news";
-my $username = "Your registrant alert api username";
-my $password = "Your registrant alert api password";
+my $base_url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php';
+my $term1 = 'whois';
+my $exclude_term1 = 'domain';
+my $exclude_term2 = 'news';
+my $username = 'Your registrant alert api username';
+my $password = 'Your registrant alert api password';
 
 #######################
 # Use a JSON resource #
 #######################
-print "JSON\n---\n".getData("json");
+print "JSON\n---\n" . getData('json') . "\n\n";
 
 #######################
 # Use an XML resource #
 #######################
-print "XML\n---\n".getData("xml");
+print "XML\n---\n" . getData('xml');
 
 #######################
 # Getting the Data    #
 #######################
 sub getData {
     my $format = $_[0];
-    my $url = "$base_url?username=$username&password=$password&term1=$term1"
-            . "&exclude_term1=$exclude_term1&exclude_term2=$exclude_term2"
-            . "&output_format=$format";
-    $url = uri_encode($url);
+    my $url = $base_url
+            . '?username=' . uri_escape($username)
+            . '&password=' . uri_escape($password)
+            . '&term1=' . uri_escape($term1)
+            . '&exclude_term1=' . uri_escape($exclude_term1)
+            . '&exclude_term2=' . uri_escape($exclude_term2)
+            . '&output_format=' . uri_escape($format);
 
     print "Get data by URL: $url\n";
     # 'get' is exported by LWP::Simple;
