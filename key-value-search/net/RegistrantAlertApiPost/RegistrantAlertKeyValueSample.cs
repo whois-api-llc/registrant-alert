@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Net;
 using System.IO;
+using System.Net;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,46 +8,91 @@ using Newtonsoft.Json.Linq;
 // Note that you need to make sure your Project is set to ".NET Framework 4"
 // and NOT ".NET Framework 4 Client Profile". Once that is set, make sure the
 // following references are present under the References tree under the
-// project: Microsoft.CSharp, System, System.Web.Extensions, and System.XML
+// project: Microsoft.CSharp, System, System.Web.Extensions, and System.XML.
 
 namespace RegistrantAlertApiPost
 {
-    public class RegistrantAlertKeyValueSample
+    public static class RegistrantAlertKeyValueSample
     {
-        private string _username;
-        private string _password;
-        public const string Url =
-            "https://www.whoisxmlapi.com/registrant-alert-api/search.php";
-
-        static void Main(string[] args)
+        private static void Main()
         {
-            RegistrantAlertKeyValueSample regAlert =
-                new RegistrantAlertKeyValueSample();
-
             //////////////////////////
             // Fill in your details //
             //////////////////////////
-            regAlert.SetUsername("Your registrant alert api username");
-            regAlert.SetPassword("Your registrant alert api password");
+            var regAlert = new RegAlertSample
+            {
+                Username = "Your registrant alert api username",
+                Password = "Your registrant alert api password"
+            };
 
             //////////////////////////
             // Send POST request    //
             //////////////////////////
-            string responsePost = regAlert.SendPostRegistrantAlert();
-            regAlert.PrintResponse(responsePost);
+            var responsePost = regAlert.SendPostRegistrantAlert();
+            PrintResponse(responsePost);
 
             //////////////////////////
             // Send GET request     //
             //////////////////////////
-            string responseGet = regAlert.SendGetRegistrantAlert();
-            regAlert.PrintResponse(responseGet);
+            var responseGet = regAlert.SendGetRegistrantAlert();
+            PrintResponse(responseGet);
 
             // Prevent command window from automatically closing
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
         }
+        
+        private static void PrintResponse(string response)
+        {
+            dynamic responseObject = JsonConvert.DeserializeObject(response);
 
-        protected string SendPostRegistrantAlert()
+            if (responseObject != null)
+            {
+                Console.Write(responseObject);
+                Console.WriteLine("--------------------------------");
+                return;
+            }
+
+            Console.WriteLine(response);
+            Console.WriteLine();
+        }
+    }
+
+    public class RegAlertSample
+    {
+        private const string Url =
+            "https://www.whoisxmlapi.com/registrant-alert-api/search.php";
+        
+        public string SendGetRegistrantAlert()
+        {
+            /////////////////////////////
+            // Use query string params //
+            /////////////////////////////
+            var requestParams =
+                "?term1=test"
+                + "&mode=purchase"
+                + "&username=" + Uri.EscapeDataString(Username)
+                + "&password=" + Uri.EscapeDataString(Password);
+
+            var fullUrl = Url + requestParams;
+
+            Console.Write("Sending request to: " + fullUrl + "\n");
+
+            // Download JSON into a string
+            var result = new WebClient().DownloadString(fullUrl);
+                
+            // Print a nice informative string
+            try
+            {
+                return result;
+            }
+            catch (Exception)
+            {
+                return "{\"error\":\"An unkown error has occurred!\"}";
+            }
+        }
+        
+        public string SendPostRegistrantAlert()
         {
             /////////////////////////
             // Use a JSON resource //
@@ -59,10 +104,10 @@ namespace RegistrantAlertApiPost
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
 
-            using (var streamWriter =
-                        new StreamWriter(httpWebRequest.GetRequestStream()))
+            using (var requestStream = httpWebRequest.GetRequestStream())
+            using (var streamWriter = new StreamWriter(requestStream))
             {
-                string json = @"{
+                var json = @"{
                     terms: [
                         {
                             section: 'Registrant',
@@ -73,17 +118,16 @@ namespace RegistrantAlertApiPost
                         }
                     ],
                     recordsCounter: false,
-                    outputFormat: 'xml',
+                    outputFormat: 'json',
                     username: 'USER_NAME',
                     password: 'USER_PASS',
-                    rows: 10,
-                    searchType: 'current'
+                    rows: 10
                 }";
 
-                json = json.Replace("USER_NAME", this.GetUsername())
-                           .Replace("USER_PASS", this.GetPassword());
+                json = json.Replace("USER_NAME", Username)
+                           .Replace("USER_PASS", Password);
                 
-                string jsonData = JObject.Parse(json).ToString();
+                var jsonData = JObject.Parse(json).ToString();
 
                 streamWriter.Write(jsonData);
                 streamWriter.Flush();
@@ -92,74 +136,29 @@ namespace RegistrantAlertApiPost
 
             var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
             
-            string res;
-            using (var streamReader = 
-                        new StreamReader(httpResponse.GetResponseStream()))
+            var res = "";
+            
+            if (httpResponse.GetResponseStream() == null)
+                return null;
+
+            using (var responseStream = httpResponse.GetResponseStream())
             {
-                res = streamReader.ReadToEnd();
+                if (responseStream == null || responseStream == Stream.Null)
+                {
+                    return res;
+                }
+
+                using (var streamReader = new StreamReader(responseStream))
+                {
+                    res = streamReader.ReadToEnd();
+                }
             }
+
             return res;
         }
 
-        protected string SendGetRegistrantAlert()
-        {
-            /////////////////////////////
-            // Use query string params //
-            /////////////////////////////
-            string requestParams =
-                "?term1=" + "test" +  "&mode=purchase" + "&username="
-                + Uri.EscapeDataString(this.GetUsername())
-                + "&password=" + Uri.EscapeDataString(this.GetPassword());
-
-            string fullUrl = Url + requestParams;
-
-            Console.Write("Sending request to: " + fullUrl + "\n");
-
-            // Download JSON into a string
-            string result = new WebClient().DownloadString(fullUrl);
-                
-            // Print a nice informative string
-            try
-            {
-                return result;
-            }
-            catch (Exception e)
-            {
-                return "{\"error\":\"An unkown error has occurred!\"}";
-            }
-        }
-
-        public void SetUsername(string login)
-        {
-            this._username = login;
-        }
-        public void SetPassword(string pass)
-        {
-            this._password = pass;
-        }
-
-        public String GetUsername()
-        {
-            return this._username;
-        }
-
-        public String GetPassword()
-        {
-            return this._password;
-        }
-
-        protected void PrintResponse(string response)
-        {
-            dynamic responseObject = JsonConvert.DeserializeObject(response);
-            if (responseObject != null)
-            {
-                Console.Write(responseObject);
-                Console.WriteLine("--------------------------------");
-                return;
-            }
-
-            Console.WriteLine(response);
-            Console.WriteLine();
-        }
+        public string Password { get; set; }
+        
+        public string Username { get; set; }
     }
 }

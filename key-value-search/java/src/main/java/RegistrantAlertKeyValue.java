@@ -1,26 +1,25 @@
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import com.google.gson.*;
 import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
+
+import com.google.gson.*;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 public class RegistrantAlertKeyValue
 {
-    private final String USER_AGENT = "Mozilla/5.0";
+    private String username;
+    private String password;
 
-    // Use getter and setter functions for accessing username and password
-    protected String username;
-    protected String password;
-    public final String url =
+    private final String url =
         "https://www.whoisxmlapi.com/registrant-alert-api/search.php";
 
     public static void main(String[] args) throws Exception
@@ -31,23 +30,87 @@ public class RegistrantAlertKeyValue
         query.setUsername("Your registrant alert username");
         query.setPassword("Your registrant alert password");
 
-        // Send POST request
-        String responseStringPost= query.sendPost();
-        query.printPrettyJson(responseStringPost);
+        try {
+            // Send POST request
+            String responseStringPost = query.sendPost();
+            query.PrettyPrintJson(responseStringPost);
 
-        // Send GET request
-        String responseStringGet = query.sendGet();
-        query.printPrettyJson(responseStringGet);
+            // Send GET request
+            String responseStringGet = query.sendGet();
+            query.PrettyPrintJson(responseStringGet);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getPassword(boolean quotes)
+    {
+        if (quotes)
+            return "\"" + this.getPassword() + "\"";
+        else
+            return this.getPassword();
+    }
+
+    public String getUsername(boolean quotes)
+    {
+        if (quotes)
+            return "\"" + this.getUsername() + "\"";
+        else
+            return this.getUsername();
+    }
+
+    public void PrettyPrintJson(String jsonString)
+    {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(jsonString);
+        String prettyJsonString = gson.toJson(je);
+
+        System.out.println("\n\n" + prettyJsonString);
+        System.out.println("----------------------------------------");
+    }
+
+    public String sendGet() throws IOException
+    {
+        CloseableHttpClient httpclient = null;
+        String responseBody = "";
+
+        try {
+            String url_api =
+                this.url
+                + "?term1=whois&search_type=current&mode=purchase&rows=5"
+                + "&username=" + URLEncoder.encode(this.getUsername(),"UTF-8")
+                + "&password=" +URLEncoder.encode(this.getPassword(),"UTF-8");
+
+            httpclient = HttpClients.createDefault();
+            HttpGet httpget = new HttpGet(url_api);
+            System.out.println("executing request " + httpget.getURI());
+
+            // Create a response handler
+            ResponseHandler<String> responseHandler =
+                    new BasicResponseHandler();
+
+            responseBody = httpclient.execute(httpget, responseHandler);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally{
+            if (httpclient != null)
+                httpclient.close();
+        }
+
+        return responseBody;
     }
 
     // HTTP POST request
-    protected String sendPost() throws Exception
+    public String sendPost() throws Exception
     {
         URL obj = new URL(this.url);
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
         con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
 
         String searchTerm1 = "\"section\": \"Registrant\","
                            + "\"attribute\": \"name\","
@@ -55,16 +118,16 @@ public class RegistrantAlertKeyValue
                            + "\"matchType\": \"anywhere\","
                            + "\"exclude\": false";
 
-        String requestOptions =
-                "\"recordsCounter\": false,"
-                + "\"rows\": 10, \"username\":" + this.getUsername(true) + ","
-                + "\"password\":" + this.getPassword(true) + ","
-                + "\"output_format\": \"json\"";
+        String requestOptions = "\"recordsCounter\": false,"
+                              + "\"rows\": 10,"
+                              + "\"username\":" + this.getUsername(true) + ","
+                              + "\"password\":" + this.getPassword(true) + ","
+                              + "\"outputFormat\": \"json\"";
 
         String requestObject =
                 "{\"terms\":[{" + searchTerm1 + "}], " + requestOptions +"}";
 
-        // Send post request
+        // Send POST request
         con.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
         wr.writeBytes(requestObject);
@@ -87,80 +150,23 @@ public class RegistrantAlertKeyValue
         return response.toString();
     }
 
-    protected String sendGet()
+    public void setUsername(String username)
     {
-        HttpClient httpclient = null;
-        String responseBody = "";
-
-        try {
-            String url_api = this.url
-               + "?term1=whois&search_type=current&mode=purchase&rows=5"
-               + "&username=" + URLEncoder.encode(this.getUsername(),"UTF-8")
-               + "&password=" + URLEncoder.encode(this.getPassword(),"UTF-8");
-            
-            httpclient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet(url_api);
-            System.out.println("executing request " + httpget.getURI());
-
-            // Create a response handler
-            ResponseHandler<String> responseHandler =
-                    new BasicResponseHandler();
-            responseBody = httpclient.execute(httpget, responseHandler);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally{
-            if (httpclient != null)
-                httpclient.getConnectionManager().shutdown();
-        }
-
-        return responseBody;
+        this.username = username;
     }
 
-    public void setUsername(String login)
+    public void setPassword(String password)
     {
-        this.username = login;
+        this.password = password;
     }
 
-    public void setPassword(String pass)
-    {
-        this.password = pass;
-    }
-
-    public String getUsername()
+    private String getUsername()
     {
         return this.username;
     }
 
-    public String getUsername(boolean quotes)
-    {
-        if (quotes)
-            return "\"" + this.getUsername() + "\"";
-        else
-            return this.getUsername();
-    }
-
-    public String getPassword()
+    private String getPassword()
     {
         return this.password;
-    }
-
-    public String getPassword(boolean quotes)
-    {
-        if (quotes)
-            return "\"" + this.getPassword() + "\"";
-        else
-            return this.getPassword();
-    }
-
-    public void printPrettyJson(String jsonString)
-    {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(jsonString);
-        String prettyJsonString = gson.toJson(je);
-
-        System.out.println("\n\n" + prettyJsonString);
-        System.out.println("----------------------------------------");
     }
 }

@@ -22,7 +22,7 @@ echo "JSON:`n---" $j.content "`n"
 # Use an XML resource #
 #######################
 
-$uri = $uri + "&output_format=xml"
+$uri = $uri + '&output_format=xml'
 
 $j = Invoke-WebRequest -Uri $uri
-echo "XML:`n---" $j.content
+echo "XML:`n---" $j.content "`n"

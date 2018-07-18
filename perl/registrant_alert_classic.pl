@@ -3,8 +3,9 @@
 use LWP::Protocol::https;         # From CPAN
 use LWP::Simple;                  # From CPAN
 use URI::Escape qw( uri_escape ); # From CPAN
-use strict;                       # Good practice
-use warnings;                     # Good practice
+
+use strict;
+use warnings;
 
 my $base_url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php';
 my $term1 = 'whois';
@@ -21,7 +22,7 @@ print "JSON\n---\n" . getData('json') . "\n\n";
 #######################
 # Use an XML resource #
 #######################
-print "XML\n---\n" . getData('xml');
+print "XML\n---\n" . getData('xml') . "\n";
 
 #######################
 # Getting the Data    #
@@ -41,5 +42,5 @@ sub getData {
     my $object = get($url);
 
     die "Could not get $base_url!" unless defined $object;
-    return $object
+    return $object;
 }

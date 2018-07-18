@@ -1,6 +1,7 @@
 require 'erb'
-require 'open-uri'
 require 'json'
+require 'net/https'
+require 'uri'
 require 'yaml' # only needed to print the returned result in a very pretty way
 
 ########################
@@ -16,17 +17,17 @@ exclude_term2 = 'online'
 #######################
 # Use a JSON resource #
 #######################
-format = "JSON"
-url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php?' +
-    'term1=' + ERB::Util.url_encode(term1) +
-    '&username=' + ERB::Util.url_encode(username) +
-    '&password=' + ERB::Util.url_encode(password) +
-    '&output_format=' + ERB::Util.url_encode(format) +
-    '&exclude_term1=' + ERB::Util.url_encode(exclude_term1) +
-    '&exclude_term2=' + ERB::Util.url_encode(exclude_term2)
+format = 'json'
+url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php' \
+      '?term1=' + ERB::Util.url_encode(term1) +
+      '&username=' + ERB::Util.url_encode(username) +
+      '&password=' + ERB::Util.url_encode(password) +
+      '&output_format=' + ERB::Util.url_encode(format) +
+      '&exclude_term1=' + ERB::Util.url_encode(exclude_term1) +
+      '&exclude_term2=' + ERB::Util.url_encode(exclude_term2)
 
 # Open the resource
-buffer = open(url).read
+buffer = Net::HTTP.get(URI.parse(url))
 
 # Parse the JSON result
 result = JSON.parse(buffer)

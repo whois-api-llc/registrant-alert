@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registrant Alert API JQuery Key-Value Search Sample</title>
+    <title>Registrant Alert API jQuery Key-Value Search Sample</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
+
+        var url="https://www.whoisxmlapi.com/registrant-alert-api/search.php";
+
         // Fill in your details
         var username = "Your registrant alert api username";
         var password = "Your registrant alert api password";
@@ -32,16 +35,17 @@
             rows: 20
         };
 
-        $(function () {
+        $(function() {
             $.post(
-                "https://www.whoisxmlapi.com/registrant-alert-api/search.php",
+                url,
                 JSON.stringify(post_data),
                 function(data) {
                     $("body").append(
-                        "<pre>" + JSON.stringify(data, "", 2) + "</pre>");
+                        "<pre>" + JSON.stringify(data, null, 2) + "</pre>");
                 }
             );
         });
+
     </script>
 </head>
 <body></body>

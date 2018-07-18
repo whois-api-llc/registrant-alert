@@ -8,22 +8,22 @@ var password = 'Your registrant alert api password';
 var post_data = {
     terms: [
         {
-            section: "Registrant",
-            attribute: "email",
-            value: "gmail.com",
+            section: 'Registrant',
+            attribute: 'email',
+            value: 'gmail.com',
             exclude: false,
-            matchType: "EndsWith"
+            matchType: 'EndsWith'
         },
         {
-            section: "General",
-            attribute: "DomainName",
-            value: ".com",
+            section: 'General',
+            attribute: 'DomainName',
+            value: '.com',
             exclude: false,
-            matchType: "EndsWith"
+            matchType: 'EndsWith'
         }
     ],
     recordsCounter: false,
-    outputFormat: "json",
+    outputFormat: 'json',
     username: username,
     password: password,
     rows: 20
@@ -47,10 +47,10 @@ var options = {
 var req = https.request(options, function(res)  {
     var str = '';
     res.on('data', function(chunk) {
-        str+=chunk;
+        str += chunk;
     });
     res.on('end', function() {
-        console.log(str);
+        console.log(JSON.parse(str));
     });
 
 });

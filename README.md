@@ -1,3 +1,7 @@
+# Warning
+> This version of the API is deprecated. It is strongly recommended to use
+[Registrant Alert API 2.0](https://github.com/whois-api-llc/registrant-alert2)
+
 # Using the Registrant Alert API web service
 
 [Registrant Alert API](https://www.whoisxmlapi.com/registrant-alert-api.php) 

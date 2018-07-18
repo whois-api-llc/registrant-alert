@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registrant Alert API JQuery Search Sample</title>
+    <title>Registrant Alert API jQuery Search Sample</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
+
         var apiUrl =
-          "https://www.whoisxmlapi.com/registrant-alert-api/search.php";
+            "https://www.whoisxmlapi.com/registrant-alert-api/search.php";
+
         // Fill in your details
         var username = "Your registrant alert api username";
         var password = "Your registrant alert api password";
         var term1 = "test";
-        var format = "JSON";
+        var format = "json";
 
         $(function () {
-            $.ajax({
-                url: apiUrl,
-                dataType: "jsonp",
-                data: {
-                    term1: term1,
-                    username: username,
-                    password: password,
-                    outputFormat: format
-                },
-                success: function(data) {
-                    $("body").append(
-                      "<pre>" + JSON.stringify(data,"",2) + "</pre>");
+            $.ajax(
+                {
+                    url: apiUrl,
+                    dataType: "jsonp",
+                    data: {
+                        term1: term1,
+                        username: username,
+                        password: password,
+                        outputFormat: format
+                    },
+                    success: function(data) {
+                        $("body").append(
+                            "<pre>" + JSON.stringify(data, null, 2)+"</pre>");
+                    }
                 }
-            });
+            );
         });
+
     </script>
 </head>
 <body></body>

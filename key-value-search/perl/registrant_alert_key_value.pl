@@ -5,8 +5,9 @@ use JSON qw( decode_json );           # From CPAN
 use LWP::Protocol::https;             # From CPAN
 use LWP::Simple;                      # From CPAN
 use LWP::UserAgent;                   # From CPAN
-use strict;                           # Good practice
-use warnings;                         # Good practice
+
+use strict;
+use warnings;
 
 ########################
 # Fill in your details #
@@ -20,12 +21,13 @@ my $url = 'https://www.whoisxmlapi.com/registrant-alert-api/search.php';
 # Use a JSON resource #
 #######################
 
-my $responseJson = JSON->new->decode(registrantAlertKeyValueSearch("json"));
+my $responseJson = JSON->new->decode(registrantAlertKeyValueSearch());
+
 print "JSON\n---\n";
 print JSON->new->pretty->encode($responseJson);
 
 #######################
-#     getting Data    #
+# Getting the Data    #
 #######################
 
 sub registrantAlertKeyValueSearch {
@@ -55,7 +57,7 @@ sub registrantAlertKeyValueSearch {
     }';
 
     my $ua = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
-    my $req = HTTP::Request->new("POST", $url);
+    my $req = HTTP::Request->new('POST', $url);
 
     $req->header('Content-Type' => 'application/json');
     $req->header('Accept', 'application/json');
